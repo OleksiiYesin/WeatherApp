@@ -1,0 +1,89 @@
+#!groovy
+// Run docker build
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+        label "dev"
+    }
+    tools {
+        terraform 'terraform'
+    }
+    stages {
+        stage("ansible playbook") {
+            agent {
+                label "dev"
+            }
+            steps {
+                echo " ============== start playbook =================="
+                ansiblePlaybook credentialsId: 'ssh-key-oregon', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'ansible/inventory', playbook: 'ansible/agent.yml'
+            }
+        }
+
+        stage("docker login") {
+            agent {
+                label "dev"
+            }
+            steps {
+                echo " ============== start docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-key', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                	sh 'docker login -u $USERNAME -p $PASSWORD'
+                }
+            }
+        }
+
+        stage("create docker image") {
+            agent {
+                label "dev"
+            }
+            steps {
+                echo " ============== start building image =================="
+                dir ('.') {
+                	sh 'docker build -t yesinaleksey/weatherapp:v5 .'
+                }
+            }
+        }
+
+        stage("docker push") {
+            agent {
+                label "dev"
+            }
+            steps {
+                echo "============== start pushing container =================="
+                dir ('.') {
+                	sh 'docker push yesinaleksey/weatherapp:v5'
+                }
+                echo "============== start removing container from dev.server =================="
+                dir ('.') {
+                  sh 'docker rmi yesinaleksey/weatherapp:v5'
+                }
+            }
+        }
+
+        stage('terraform init') {
+            agent {
+                label "dev"
+            }
+            steps {
+              echo "============== terraform init =================="
+              withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh '''
+                   terraform init
+                '''
+              }
+            }
+        }
+
+        stage('terraform apply') {
+            agent {
+                label "dev"
+            }
+            steps {
+              echo "============== terraform apply =================="
+              withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh 'terraform apply -auto-approve'
+              }
+            }
+        }
+    }
+}

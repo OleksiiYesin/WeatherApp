@@ -1,0 +1,48 @@
+---
+- name: Install DOCKER and TERRAFORM on agent-server
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update APT package manager repositories cache
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg', 'lsb-release', 'unzip' ]
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+      
+    - name: Create "docker" group
+      group:
+         name: docker
+         state: present
+
+    - name: Add remote "ubuntu" user to "docker" group
+      user:
+        name: ubuntu
+        group: docker
+        append: yes
+
+    - name: Install terraform
+      unarchive:
+       src: https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip
+       dest: /usr/bin
+       remote_src: True
+

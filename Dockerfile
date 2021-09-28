@@ -1,10 +1,12 @@
 FROM python:3.6.8
 
-WORKDIR /weather
+ENV dir /weather
+
+WORKDIR $dir
 
 COPY requirements.txt requirements.txt
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
 
 COPY . .
 

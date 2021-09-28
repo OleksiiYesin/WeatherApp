@@ -1,6 +1,6 @@
 ---
 - name: Install DOCKER and TERRAFORM on agent-server
-  hosts: all
+  hosts: agent
   become: yes
 
   tasks:
@@ -28,7 +28,7 @@
 
     - name: Update apt and install docker-ce
       apt: update_cache=yes name=docker-ce state=latest
-      
+
     - name: Create "docker" group
       group:
          name: docker
@@ -45,4 +45,3 @@
        src: https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip
        dest: /usr/bin
        remote_src: True
-

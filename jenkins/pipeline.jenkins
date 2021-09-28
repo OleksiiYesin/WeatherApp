@@ -15,7 +15,7 @@ pipeline {
                 label "dev"
             }
             steps {
-                echo " ============== start playbook =================="
+                echo " ============== Configure agent-server =================="
                 ansiblePlaybook credentialsId: 'ssh-key-oregon', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'ansible/inventory', playbook: 'ansible/agent.yml'
             }
         }
@@ -25,7 +25,7 @@ pipeline {
                 label "dev"
             }
             steps {
-                echo " ============== start docker login =================="
+                echo " ============== Docker login =================="
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-key', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 	sh 'docker login -u $USERNAME -p $PASSWORD'
                 }
@@ -37,9 +37,9 @@ pipeline {
                 label "dev"
             }
             steps {
-                echo " ============== start building image =================="
+                echo " ============== Start building image =================="
                 dir ('.') {
-                	sh 'docker build -t yesinaleksey/weatherapp:v5 .'
+                	sh 'docker build -t yesinaleksey/weatherapp:v1 .'
                 }
             }
         }
@@ -49,13 +49,13 @@ pipeline {
                 label "dev"
             }
             steps {
-                echo "============== start pushing container =================="
+                echo "============== start push container =================="
                 dir ('.') {
-                	sh 'docker push yesinaleksey/weatherapp:v5'
+                	sh 'docker push yesinaleksey/weatherapp:v1'
                 }
-                echo "============== start removing container from dev.server =================="
+                echo "============== start removing container from agent-server =================="
                 dir ('.') {
-                  sh 'docker rmi yesinaleksey/weatherapp:v5'
+                  sh 'docker rmi yesinaleksey/weatherapp:v1'
                 }
             }
         }

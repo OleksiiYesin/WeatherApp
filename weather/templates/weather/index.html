@@ -11,14 +11,14 @@
   <div class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <ul class="nav nav-pills">
         <li class="nav-item"><a href="#" class="nav-link" aria-current="page">Главная</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Information</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Информация</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Документация</a></li>
       </ul>
   </div>
   <div class="container mt-5">
     <div class="row">
       <div class="col-5 offset-2">
-        <h1>Weather in your city</h1>
+        <h1>Погода в вашем городе</h1>
         <form action="" method="post">
           {% csrf_token %}
           <label for="city">Город</label>
@@ -27,14 +27,14 @@
         </form>
       </div>
       <div class="col-4 offset-1">
-        <h1>Info</h1>
+        <h1>Информация</h1>
 
 
         {% for info in all_info %}
         <div class="alert alert-info">
           <div class="row">
             <div class="col-9">
-	      <b>City:</b> {{ info.city }}<br>
+	      <b>Город:</b> {{ info.city }}<br>
               <b>Температура:</b> {{ info.temp }}<sup>o</sup><br>
             </div>
             <div class="col-2 offset-1">

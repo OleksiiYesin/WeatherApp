@@ -1,7 +1,4 @@
 #!groovy
-// Run docker build
-properties([disableConcurrentBuilds()])
-
 pipeline {
     agent {
         label "dev"
@@ -10,6 +7,11 @@ pipeline {
         terraform 'terraform'
     }
     stages {
+
+##############################################
+############### ANSIBLE ######################
+##############################################
+
         stage("ansible playbook") {
             agent {
                 label "dev"
@@ -19,6 +21,10 @@ pipeline {
                 ansiblePlaybook credentialsId: 'ssh-key-oregon', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'ansible/inventory', playbook: 'ansible/agent.yml'
             }
         }
+
+##############################################
+############### DOCKER #######################
+##############################################
 
         stage("docker login") {
             agent {
@@ -55,10 +61,14 @@ pipeline {
                 }
                 echo "============== start removing container from agent-server =================="
                 dir ('.') {
-                  sh 'docker rmi yesinaleksey/weatherapp:v1'
+                  sh 'docker rmi yesinaleksey/weatherapp:v1 python:3.6.8'
                 }
             }
         }
+
+##############################################
+############### TERRAFORM ####################
+##############################################
 
         stage('terraform init') {
             agent {
@@ -67,9 +77,9 @@ pipeline {
             steps {
               echo "============== terraform init =================="
               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                sh '''
-                   terraform init
-                '''
+                dir("terraform/"){
+                sh "terraform init"
+                }
               }
             }
         }
@@ -81,7 +91,9 @@ pipeline {
             steps {
               echo "============== terraform apply =================="
               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                sh 'terraform apply -auto-approve'
+                dir("terraform/")
+                sh "terraform apply -auto-approve"
+                }
               }
             }
         }

@@ -8,10 +8,6 @@ pipeline {
     }
     stages {
 
-##############################################
-############### ANSIBLE ######################
-##############################################
-
         stage("ansible playbook") {
             agent {
                 label "dev"
@@ -21,10 +17,6 @@ pipeline {
                 ansiblePlaybook credentialsId: 'ssh-key-oregon', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'ansible/inventory', playbook: 'ansible/agent.yml'
             }
         }
-
-##############################################
-############### DOCKER #######################
-##############################################
 
         stage("docker login") {
             agent {
@@ -65,10 +57,6 @@ pipeline {
                 }
             }
         }
-
-##############################################
-############### TERRAFORM ####################
-##############################################
 
         stage('terraform init') {
             agent {

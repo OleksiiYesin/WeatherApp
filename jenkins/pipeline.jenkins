@@ -64,8 +64,8 @@ pipeline {
             }
             steps {
               echo "============== terraform init =================="
-              withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
               dir("terraform/"){
+              withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh "terraform init"
               }
               }
@@ -78,8 +78,8 @@ pipeline {
             }
             steps {
               echo "============== terraform apply =================="
+              dir("terraform/"){
               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'IAM-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-              dir("terraform/")
                 sh "terraform apply -auto-approve"
               }
               }

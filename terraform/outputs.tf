@@ -1,3 +1,3 @@
-output "prod_public_ip" {
-  value = aws_eip.static_ip.public_ip
+output "prod_elb_url" {
+  value = aws_elb.prod.dns_name
 }

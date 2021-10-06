@@ -12,4 +12,4 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update -y
 sudo apt install docker-ce docker-ce-cli containerd.io -y
-sudo docker run -p 8000:8000 -d yesinaleksey/weatherapp:v5
+sudo docker run -p 8000:8000 -d yesinaleksey/weatherapp:v1

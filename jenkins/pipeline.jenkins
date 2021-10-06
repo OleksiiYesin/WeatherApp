@@ -37,7 +37,7 @@ pipeline {
             steps {
                 echo " ============== Start building image =================="
                 dir ('.') {
-                	sh 'docker build -t yesinaleksey/weatherapp:v5 .'
+                	sh 'docker build -t yesinaleksey/weatherapp:v1 .'
                 }
             }
         }
@@ -49,11 +49,11 @@ pipeline {
             steps {
                 echo "============== start push container =================="
                 dir ('.') {
-                	sh 'docker push yesinaleksey/weatherapp:v5'
+                	sh 'docker push yesinaleksey/weatherapp:v1'
                 }
                 echo "============== start removing container from agent-server =================="
                 dir ('.') {
-                  sh 'docker rmi yesinaleksey/weatherapp:v5 python:3.6.8'
+                  sh 'docker rmi yesinaleksey/weatherapp:v1 python:3.6.8'
                 }
             }
         }

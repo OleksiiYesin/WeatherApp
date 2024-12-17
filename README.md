@@ -1,5 +1,6 @@
-# WeatherApp
+## Template Version
 
-<p align="center">
-  <img src="https://github.com/OleksiiYesin/WeatherApp/blob/main/demo/image1.png">
-</p>
+| Repository    |   Version   | Env | Status |
+|---------------|-------------|-----|--------|
+| .NET     | **2.0.0**  | dev | ![Updated](https://img.shields.io/badge/updated-green) |
+| NodeJS     | **1.0.0**  | dev | ![Updated](https://img.shields.io/badge/updated-green) |
